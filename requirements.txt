@@ -1,0 +1,8 @@
+customtkinter==5.2.2
+darkdetect==0.8.0
+future==1.0.0
+mutagen==1.47.0
+numpy==2.2.3
+packaging==24.2
+pillow==11.1.0
+python-vlc==3.0.21203
