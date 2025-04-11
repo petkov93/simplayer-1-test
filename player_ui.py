@@ -1,6 +1,9 @@
+from PIL.ImageOps import expand
 from vlc import State
-from customtkinter import *
-from tkinter import ttk
+from customtkinter import CTk, CTkImage, CTkFrame, CTkButton, CTkLabel, CTkProgressBar
+from const import (TOP_LABEL_INIT_MSG, TOP_LABEL_FONT, TOP_LABEL_COLOR, BTN_IMG_SIZE, W_PADX,
+                   TOP_LABEL_ERR_NO_SEL, TOP_LABEL_PLAYING, TOP_LABEL_PAUSED, TOP_LABEL_STOPPED)
+from tkinter.ttk import Treeview, Style
 from PIL import Image
 from mutagen.mp3 import MP3
 from mediaplayer import Simplayer
@@ -22,46 +25,46 @@ class MediaPlayerUI(CTk):
         self.folder_path = os.path.join(os.path.join(os.path.expanduser('~'), 'Desktop'), 'YouTube')
         self.music_folder = os.listdir(self.folder_path)
         # images
-        self.repeat_img = CTkImage(Image.open('./btnimgs/orange-repeat-circle.png'), size=(45, 45))
-        self.repeat_1_img = CTkImage(Image.open('./btnimgs/orange-repeat-1-circle.png'), size=(45, 45))
-        self.repeat_off_img = CTkImage(Image.open('./btnimgs/orange-repeat-off-circle.png'), size=(45, 45))
-        self.shuffle_img = CTkImage(Image.open('./btnimgs/orange-shuffle.png'), size=(45, 45))
+        self.repeat_img = CTkImage(Image.open('./btnimgs/orange-repeat-circle.png'), size=BTN_IMG_SIZE)
+        self.repeat_1_img = CTkImage(Image.open('./btnimgs/orange-repeat-1-circle.png'), size=BTN_IMG_SIZE)
+        self.repeat_off_img = CTkImage(Image.open('./btnimgs/orange-repeat-off-circle.png'), size=BTN_IMG_SIZE)
+        self.shuffle_img = CTkImage(Image.open('./btnimgs/orange-shuffle.png'), size=BTN_IMG_SIZE)
 
-        self.prev_img = CTkImage(Image.open('./btnimgs/orange-prev.png'), size=(45, 45))
-        self.play_img = CTkImage(Image.open('./btnimgs/orange-play.png'), size=(45, 45))
-        self.pause_img = CTkImage(Image.open('./btnimgs/orange-pause.png'), size=(45, 45))
-        self.next_img = CTkImage(Image.open('./btnimgs/orange-next.png'), size=(45, 45))
-        self.stop_img = CTkImage(Image.open('./btnimgs/orange-stop.png'), size=(45, 45))
+        self.prev_img = CTkImage(Image.open('./btnimgs/orange-prev.png'), size=BTN_IMG_SIZE)
+        self.play_img = CTkImage(Image.open('./btnimgs/orange-play.png'), size=BTN_IMG_SIZE)
+        self.pause_img = CTkImage(Image.open('./btnimgs/orange-pause.png'), size=BTN_IMG_SIZE)
+        self.next_img = CTkImage(Image.open('./btnimgs/orange-next.png'), size=BTN_IMG_SIZE)
+        self.stop_img = CTkImage(Image.open('./btnimgs/orange-stop.png'), size=BTN_IMG_SIZE)
 
-        self.mute_img = CTkImage(Image.open('./btnimgs/orange-mute.png'), size=(45, 45))
-        self.vol_up_img = CTkImage(Image.open('./btnimgs/orange-volume-up.png'), size=(45, 45))
-        self.vol_down_img = CTkImage(Image.open('./btnimgs/orange-volume-down.png'), size=(45, 45))
-        # widgets init
-        self.top_frame = CTkFrame(self, )
-        self.progress_frame = CTkFrame(self, )
+        self.mute_img = CTkImage(Image.open('./btnimgs/orange-mute.png'), size=BTN_IMG_SIZE)
+        self.vol_up_img = CTkImage(Image.open('./btnimgs/orange-volume-up.png'), size=BTN_IMG_SIZE)
+        self.vol_down_img = CTkImage(Image.open('./btnimgs/orange-volume-down.png'), size=BTN_IMG_SIZE)
+        # widgets
+        self.top_frame = CTkFrame(self,)
+        self.progress_frame = CTkFrame(self,)
         self.btn_frame = CTkFrame(self, )
-        self.playlist_frame = CTkFrame(self, )
+        self.playlist_frame = CTkFrame(self,)
         # progress bar
-        self.progress_bar = CTkProgressBar(self.progress_frame, )
+        self.progress_bar = CTkProgressBar(self.progress_frame,)
         self.volume_bar = CTkProgressBar(self.btn_frame, orientation='vertical')
         # playlist tree
-        self.song_tree = ttk.Treeview(self.playlist_frame, )
-        self.style = ttk.Style()
+        self.song_tree = Treeview(self.playlist_frame,)
+        self.style = Style()
         # labels
         self.top_label = CTkLabel(self.top_frame, )
         self.repeat_label = CTkLabel(self.progress_frame, )
-        self.time_left_label = CTkLabel(self.progress_frame, )
+        self.time_left_label = CTkLabel(self.progress_frame,)
         # buttons
-        self.repeat_btn = CTkButton(self.btn_frame, )
-        self.shuffle_btn = CTkButton(self.btn_frame, )
-        self.prev_btn = CTkButton(self.btn_frame, )
-        self.play_btn = CTkButton(self.btn_frame, )
-        self.next_btn = CTkButton(self.btn_frame, )
-        self.stop_btn = CTkButton(self.btn_frame, )
+        self.repeat_btn = CTkButton(self.btn_frame,)
+        self.shuffle_btn = CTkButton(self.btn_frame,)
+        self.prev_btn = CTkButton(self.btn_frame,)
+        self.play_btn = CTkButton(self.btn_frame,)
+        self.next_btn = CTkButton(self.btn_frame,)
+        self.stop_btn = CTkButton(self.btn_frame,)
         # volume ctrl buttons
-        self.vol_mute_btn = CTkButton(self.btn_frame, )
-        self.vol_up_btn = CTkButton(self.btn_frame, )
-        self.vol_down_btn = CTkButton(self.btn_frame, )
+        self.vol_mute_btn = CTkButton(self.btn_frame,)
+        self.vol_up_btn = CTkButton(self.btn_frame,)
+        self.vol_down_btn = CTkButton(self.btn_frame,)
 
         self.configure_window()
         self.player = Simplayer()
@@ -83,33 +86,32 @@ class MediaPlayerUI(CTk):
         self._set_appearance_mode('dark')
 
     def setup_widgets(self):
+        """ widgets set up """
         self.setup_top_frame()
         self.setup_progress_bar()
         self.setup_button_frame()
         self.setup_playlist_frame()
 
     def setup_top_frame(self):
-        self.top_label.configure(font=('Roboto', 16),
-                                 text_color='gold',
-                                 text='🎵  Welcome to my music app. 🎵 '
-                                      '\n 🎵 SimPlæyer, v1.0 🎵 '
-                                      '\n 🎵 Select a song to start the playback. 🎵',
+        self.top_label.configure(font=TOP_LABEL_FONT,
+                                 text_color=TOP_LABEL_COLOR,
+                                 text=TOP_LABEL_INIT_MSG,
                                  wraplength=350,
                                  height=80)
-        self.top_frame.pack(padx=20, pady=(20, 5), fill='x')
-        self.top_label.pack(padx=20, pady=10, fill='x')
+        self.top_frame.pack(padx=W_PADX, pady=(20, 5), fill='x')
+        self.top_label.pack(padx=W_PADX, pady=10, fill='x')
 
     def setup_progress_bar(self):
-        self.progress_frame.pack(padx=20, pady=5, fill='x', expand=True)
+        self.progress_frame.pack(padx=W_PADX, pady=5, fill='x', expand=False)
 
         self.progress_bar.configure(width=380, mode='determinate', progress_color='#ffbf00')
         self.progress_bar.set(0)
         self.time_left_label.configure(text='00:00/00:00', )
         self.repeat_label.configure(text='Repeat: All', )
 
-        self.progress_bar.grid(column=0, row=0, columnspan=2, padx=20, pady=10, sticky='ew')
-        self.repeat_label.grid(column=0, row=1, padx=25, pady=5, sticky='sw')
-        self.time_left_label.grid(column=1, row=1, padx=25, pady=5, sticky='es')
+        self.progress_bar.grid(column=0, row=0, columnspan=2, padx=W_PADX, pady=10, sticky='ew')
+        self.repeat_label.grid(column=0, row=1, padx=W_PADX, pady=5, sticky='sw')
+        self.time_left_label.grid(column=1, row=1, padx=W_PADX, pady=5, sticky='es')
 
     def update_progress(self):
         self.progress_bar.set(self.player.progress)
@@ -134,7 +136,7 @@ class MediaPlayerUI(CTk):
 
     def setup_button_frame(self):
         self.btn_frame.pack(
-            padx=20,
+            padx=W_PADX,
             pady=5,
             fill='both')
 
@@ -238,31 +240,6 @@ class MediaPlayerUI(CTk):
         place_buttons()
         configure_vol_bar()
 
-    def vol_up(self):
-        if self.current_volume > 99:
-            return
-        else:
-            self.current_volume += 5
-            self.player.set_volume(self.current_volume)
-            self.volume_bar.set(self.current_volume / 100)
-
-            print('vol + :', self.player.mediaPlayer.audio_get_volume())
-
-    def vol_down(self):
-        if self.current_volume < 5:
-            return
-        else:
-            self.current_volume -= 5
-            self.player.set_volume(self.current_volume)
-            self.volume_bar.set(self.current_volume / 100)
-
-            print('vol - :', self.player.mediaPlayer.audio_get_volume())
-
-    def vol_mute(self):
-        self.current_volume = 0
-        self.player.set_volume(self.current_volume)
-        self.volume_bar.set(self.current_volume)
-
     def setup_playlist_frame(self):
         def get_treeview_id_by_song_name(song_name):
             """Find the Treeview item ID that corresponds to a given song name."""
@@ -281,12 +258,22 @@ class MediaPlayerUI(CTk):
                     self.song_tree.item(song_id, tags=('playing', ))
 
             self.after(200, highlight_playing)
-
+        self.style.theme_use('clam')
         self.style.configure("Treeview",  # Custom style name
                              font=('Aerial', 12, 'bold'),
                              background="gray13",  # Background color for rows
                              fieldbackground="gray10",  # Background color for the widget
                              foreground="#b38600")  # Text color
+        self.style.configure("Treeview.Heading",
+                        background="gray20",  # dark background for heading
+                        foreground="gold",  # gold text in heading
+                        font=('Arial', 10, 'bold'),
+                        borderwidth=0)
+        self.style.map('Treeview.Heading',
+                       background=[('active', 'gray22')])
+        self.style.layout("Treeview", [
+            ('Treeview.treearea', {'sticky': 'nsew'})  # Remove the indent and padding
+        ])
         self.style.map("Custom.Treeview",
                        background=[('selected', '#b38600')],
                        foreground=[('selected', 'gray13')])  # Selected row color
@@ -301,16 +288,19 @@ class MediaPlayerUI(CTk):
                                 selectmode='browse',
                                 columns=('Song name', 'Length'))
 
-        self.playlist_frame.pack(padx=20,
+        self.playlist_frame.pack(padx=W_PADX,
                                  pady=(10, 20),
-                                 fill='x', )
-        self.song_tree.heading('#0', text='N', anchor='center')
+                                 fill='both',
+                                 expand=True,)
+        self.song_tree.heading('#0', text='№', anchor='w')
         self.song_tree.heading('#1', text='Song name', anchor='w')
-        self.song_tree.heading('#2', text='Length', anchor='s')
-        self.song_tree.column('#0', minwidth=10, width=10)
-        self.song_tree.column(column='#1', width=320)
+        self.song_tree.heading('#2', text='Length', anchor='w')
+
+        self.song_tree.column(column='#0', width=15, minwidth=15, anchor='w')
+        self.song_tree.column(column='#1', width=380, anchor='w')
         self.song_tree.column(column='#2', width=30, anchor='e')
-        self.song_tree.pack(fill='x', expand=False)
+
+        self.song_tree.pack(fill='both', expand=True)
 
         self.load_playlist()
         highlight_playing()
@@ -330,17 +320,16 @@ class MediaPlayerUI(CTk):
                 '',
                 index="end",
                 text=f'{index + 1}',
-                values=(f' {item}', f'{length}'))
+                values=(f'{item}', f'{length}'))
 
     def get_selected_song(self):
         """ Sets the selected song  as self.selected_song / self.sel_song_path """
         song_id = self.song_tree.focus()  # returns id of selected song
         if not song_id:
-            self.top_label.configure(text='Cant play. Nothing selected..')
+            self.top_label.configure(text=TOP_LABEL_ERR_NO_SEL)
             return
         song_data = self.song_tree.item(song_id).get('values')
         if not song_data or len(song_data) < 1:
-            self.top_label.configure(text='Invalid song')
             return
         self.selected_song = song_data[0].strip()
         self.sel_song_path = os.path.join(self.folder_path, self.selected_song)
@@ -349,7 +338,7 @@ class MediaPlayerUI(CTk):
         if self.song_index is None or not self.selected_song:
             self.get_selected_song()
             if not self.selected_song:
-                self.top_label.configure(text='No song selected from the playlist!')
+                self.top_label.configure(text=TOP_LABEL_ERR_NO_SEL)
         self.song_index = (self.playlist.index(self.selected_song) + index) % len(self.playlist)
         self.selected_song = self.playlist[self.song_index]
         self.sel_song_path = os.path.join(self.folder_path, self.selected_song)
@@ -358,13 +347,14 @@ class MediaPlayerUI(CTk):
     def update_widgets(self):
         if self.player.mediaPlayer.get_state() == State.Playing:
             self.play_btn.configure(image=self.pause_img)
-            self.top_label.configure(text=f'Now playing:\n\n🎶 {self.selected_song} 🎶')
+            self.top_label.configure(text=f'{TOP_LABEL_PLAYING}'
+                                          f'🎶 {self.selected_song} 🎶')
         elif self.player.mediaPlayer.get_state() == State.Paused:
             self.play_btn.configure(image=self.play_img)
-            self.top_label.configure(text=f'Paused: \n\n🎶 {self.selected_song} 🎶')
+            self.top_label.configure(text=f'{TOP_LABEL_PAUSED}🎶 {self.selected_song} 🎶')
         elif self.player.mediaPlayer.get_state() == State.Stopped:
             self.play_btn.configure(image=self.play_img)
-            self.top_label.configure(text='Playback stopped.\n\n -❌-')
+            self.top_label.configure(text=TOP_LABEL_STOPPED)
         elif self.player.mediaPlayer.get_state() == State.NothingSpecial:
             self.play_btn.configure(image=self.play_img)
 
@@ -419,6 +409,30 @@ class MediaPlayerUI(CTk):
             self.repeat_playlist = True
             self.repeat_label.configure(text='Repeat: All')
 
+    def vol_up(self):
+        if self.current_volume > 99:
+            return
+        else:
+            self.current_volume += 5
+            self.player.set_volume(self.current_volume)
+            self.volume_bar.set(self.current_volume / 100)
+
+            print('vol + :', self.player.mediaPlayer.audio_get_volume())
+
+    def vol_down(self):
+        if self.current_volume < 5:
+            return
+        else:
+            self.current_volume -= 5
+            self.player.set_volume(self.current_volume)
+            self.volume_bar.set(self.current_volume / 100)
+
+            print('vol - :', self.player.mediaPlayer.audio_get_volume())
+
+    def vol_mute(self):
+        self.current_volume = 0
+        self.player.set_volume(self.current_volume)
+        self.volume_bar.set(self.current_volume)
 
 if __name__ == '__main__':
     app = MediaPlayerUI()
