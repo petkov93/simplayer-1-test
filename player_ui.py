@@ -1,4 +1,3 @@
-from PIL.ImageOps import expand
 from vlc import State
 from customtkinter import CTk, CTkImage, CTkFrame, CTkButton, CTkLabel, CTkProgressBar
 from const import (TOP_LABEL_INIT_MSG, TOP_LABEL_FONT, TOP_LABEL_COLOR, BTN_IMG_SIZE, W_PADX,
