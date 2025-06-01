@@ -21,6 +21,7 @@ class Simplayer:
             self.mediaPlayer.play()
             sleep(1)
             self.get_progress()
+
         self.main_thread = threading.Thread(target=play_new_song, daemon=True).start()
 
     def pause(self):
@@ -44,7 +45,7 @@ class Simplayer:
             if total_duration > 0:
                 self.progress = (current_time / total_duration)
                 self.time_left_str = f'{ms_to_min_sec(current_time)}/{ms_to_min_sec(total_duration)}'
-                sleep(1)
+                sleep(0.1)
 
     def set_volume(self, volume):
         self.mediaPlayer.audio_set_volume(int(volume))

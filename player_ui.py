@@ -1,5 +1,5 @@
 from vlc import State
-from customtkinter import CTk, CTkImage, CTkFrame, CTkButton, CTkLabel, CTkProgressBar
+from customtkinter import CTk, CTkImage, CTkFrame, CTkButton, CTkLabel, CTkProgressBar, set_appearance_mode
 from const import (TOP_LABEL_INIT_MSG, TOP_LABEL_FONT, TOP_LABEL_COLOR, BTN_IMG_SIZE, W_PADX,
                    TOP_LABEL_ERR_NO_SEL, TOP_LABEL_PLAYING, TOP_LABEL_PAUSED, TOP_LABEL_STOPPED)
 from tkinter.ttk import Treeview, Style
@@ -8,9 +8,10 @@ from mutagen.mp3 import MP3
 from mediaplayer import Simplayer
 import os
 
+set_appearance_mode('dark') # sets the theme to dark, regardless of System theme.
 
 class MediaPlayerUI(CTk):
-    def __init__(self, ):
+    def __init__(self,):
         super().__init__()
         # variables
         self.sel_song_path = None
@@ -23,21 +24,25 @@ class MediaPlayerUI(CTk):
         # paths
         self.folder_path = os.path.join(os.path.join(os.path.expanduser('~'), 'Desktop'), 'YouTube')
         self.music_folder = os.listdir(self.folder_path)
+
+        # self.images = {name: CTkImage(Image.open(path), size=BTN_IMG_SIZE)
+        #                 for name, path in image_paths}
+
         # images
-        self.repeat_img = CTkImage(Image.open('./btnimgs/orange-repeat-circle.png'), size=BTN_IMG_SIZE)
-        self.repeat_1_img = CTkImage(Image.open('./btnimgs/orange-repeat-1-circle.png'), size=BTN_IMG_SIZE)
-        self.repeat_off_img = CTkImage(Image.open('./btnimgs/orange-repeat-off-circle.png'), size=BTN_IMG_SIZE)
-        self.shuffle_img = CTkImage(Image.open('./btnimgs/orange-shuffle.png'), size=BTN_IMG_SIZE)
+        self.repeat_img = CTkImage(Image.open('assets/orange-repeat-circle.png'), size=BTN_IMG_SIZE)
+        self.repeat_1_img = CTkImage(Image.open('assets/orange-repeat-1-circle.png'), size=BTN_IMG_SIZE)
+        self.repeat_off_img = CTkImage(Image.open('assets/orange-repeat-off-circle.png'), size=BTN_IMG_SIZE)
+        self.shuffle_img = CTkImage(Image.open('assets/orange-shuffle.png'), size=BTN_IMG_SIZE)
 
-        self.prev_img = CTkImage(Image.open('./btnimgs/orange-prev.png'), size=BTN_IMG_SIZE)
-        self.play_img = CTkImage(Image.open('./btnimgs/orange-play.png'), size=BTN_IMG_SIZE)
-        self.pause_img = CTkImage(Image.open('./btnimgs/orange-pause.png'), size=BTN_IMG_SIZE)
-        self.next_img = CTkImage(Image.open('./btnimgs/orange-next.png'), size=BTN_IMG_SIZE)
-        self.stop_img = CTkImage(Image.open('./btnimgs/orange-stop.png'), size=BTN_IMG_SIZE)
+        self.prev_img = CTkImage(Image.open('assets/orange-prev.png'), size=BTN_IMG_SIZE)
+        self.play_img = CTkImage(Image.open('assets/orange-play.png'), size=BTN_IMG_SIZE)
+        self.pause_img = CTkImage(Image.open('assets/orange-pause.png'), size=BTN_IMG_SIZE)
+        self.next_img = CTkImage(Image.open('assets/orange-next.png'), size=BTN_IMG_SIZE)
+        self.stop_img = CTkImage(Image.open('assets/orange-stop.png'), size=BTN_IMG_SIZE)
 
-        self.mute_img = CTkImage(Image.open('./btnimgs/orange-mute.png'), size=BTN_IMG_SIZE)
-        self.vol_up_img = CTkImage(Image.open('./btnimgs/orange-volume-up.png'), size=BTN_IMG_SIZE)
-        self.vol_down_img = CTkImage(Image.open('./btnimgs/orange-volume-down.png'), size=BTN_IMG_SIZE)
+        self.mute_img = CTkImage(Image.open('assets/orange-mute.png'), size=BTN_IMG_SIZE)
+        self.vol_up_img = CTkImage(Image.open('assets/orange-volume-up.png'), size=BTN_IMG_SIZE)
+        self.vol_down_img = CTkImage(Image.open('assets/orange-volume-down.png'), size=BTN_IMG_SIZE)
         # widgets
         self.top_frame = CTkFrame(self,)
         self.progress_frame = CTkFrame(self,)
@@ -64,6 +69,10 @@ class MediaPlayerUI(CTk):
         self.vol_mute_btn = CTkButton(self.btn_frame,)
         self.vol_up_btn = CTkButton(self.btn_frame,)
         self.vol_down_btn = CTkButton(self.btn_frame,)
+        # xtra buttons
+        self.empty_btn1 = CTkButton(self.btn_frame,)
+        self.empty_btn2 = CTkButton(self.btn_frame,)
+        self.empty_btn3 = CTkButton(self.btn_frame,)
 
         self.configure_window()
         self.player = Simplayer()
@@ -82,7 +91,6 @@ class MediaPlayerUI(CTk):
         """ window set up """
         self.maxsize(width=480, height=800)
         self.title('SimPlæyer 1.0')
-        self._set_appearance_mode('dark')
 
     def setup_widgets(self):
         """ widgets set up """
@@ -105,8 +113,8 @@ class MediaPlayerUI(CTk):
 
         self.progress_bar.configure(width=380, mode='determinate', progress_color='#ffbf00')
         self.progress_bar.set(0)
-        self.time_left_label.configure(text='00:00/00:00', )
-        self.repeat_label.configure(text='Repeat: All', )
+        self.time_left_label.configure(text='00:00/00:00')
+        self.repeat_label.configure(text='Repeat: All')
 
         self.progress_bar.grid(column=0, row=0, columnspan=2, padx=W_PADX, pady=10, sticky='ew')
         self.repeat_label.grid(column=0, row=1, padx=W_PADX, pady=5, sticky='sw')
@@ -217,17 +225,38 @@ class MediaPlayerUI(CTk):
                 fg_color='gray17',
                 hover_color='gray23',
                 command=self.vol_down)
+            self.empty_btn1.configure(
+                text='empty1',
+                width=30,
+                height=30,
+                fg_color='gray17',
+                hover_color='gray23',)
+            self.empty_btn2.configure(
+                text='empty2',
+                width=30,
+                height=30,
+                fg_color='gray17',
+                hover_color='gray23',)
+            self.empty_btn3.configure(
+                text='empty3',
+                width=30,
+                height=30,
+                fg_color='gray17',
+                hover_color='gray23',)
 
         def place_buttons():
             self.repeat_btn.grid(column=0, row=0, padx=2, pady=2,)
-            self.prev_btn.grid(column=1, row=0, padx=2, pady=2, )
+            self.prev_btn.grid(column=1, row=0, padx=2, pady=2)
             self.play_btn.grid(column=2, row=0, padx=2, pady=2)
             self.next_btn.grid(column=3, row=0, padx=2, pady=2)
             self.stop_btn.grid(column=4, row=0, padx=2, pady=2)
-            self.shuffle_btn.grid(column=0, row=1, pady=2, padx=2, )
-            self.vol_mute_btn.grid(column=4, row=1, pady=2, padx=2, )
-            self.vol_down_btn.grid(column=5, row=1, padx=2, pady=2, )
-            self.vol_up_btn.grid(column=5, row=0, padx=2, pady=2, )
+            self.vol_up_btn.grid(column=5, row=0, padx=2, pady=2)
+            self.shuffle_btn.grid(column=0, row=1, pady=2, padx=2)
+            self.empty_btn1.grid(column=1, row=1, padx=2, pady=2)
+            self.empty_btn2.grid(column=2, row=1, padx=2, pady=2)
+            self.empty_btn3.grid(column=3, row=1, padx=2, pady=2)
+            self.vol_mute_btn.grid(column=4, row=1, pady=2, padx=2)
+            self.vol_down_btn.grid(column=5, row=1, padx=2, pady=2)
 
         def configure_vol_bar():
             self.volume_bar.configure(height=100, width=8, progress_color='gold', mode='determinate')
@@ -257,6 +286,7 @@ class MediaPlayerUI(CTk):
                     self.song_tree.item(song_id, tags=('playing', ))
 
             self.after(200, highlight_playing)
+
         self.style.theme_use('clam')
         self.style.configure("Treeview",  # Custom style name
                              font=('Aerial', 12, 'bold'),
@@ -287,18 +317,18 @@ class MediaPlayerUI(CTk):
                                 selectmode='browse',
                                 columns=('Song name', 'Length'))
 
+        self.song_tree.heading('#0', text='№', anchor='center')
+        self.song_tree.heading('#1', text='Song name', anchor='w')
+        self.song_tree.heading('#2', text='Length', anchor='w')
+
+        self.song_tree.column(column='#0', width=15, minwidth=15, anchor='e')
+        self.song_tree.column(column='#1', width=380, anchor='w')
+        self.song_tree.column(column='#2', width=30, anchor='e')
+
         self.playlist_frame.pack(padx=W_PADX,
                                  pady=(10, 20),
                                  fill='both',
                                  expand=True,)
-        self.song_tree.heading('#0', text='№', anchor='w')
-        self.song_tree.heading('#1', text='Song name', anchor='w')
-        self.song_tree.heading('#2', text='Length', anchor='w')
-
-        self.song_tree.column(column='#0', width=15, minwidth=15, anchor='w')
-        self.song_tree.column(column='#1', width=380, anchor='w')
-        self.song_tree.column(column='#2', width=30, anchor='e')
-
         self.song_tree.pack(fill='both', expand=True)
 
         self.load_playlist()
@@ -318,8 +348,8 @@ class MediaPlayerUI(CTk):
             self.song_tree.insert(
                 '',
                 index="end",
-                text=f'{index + 1}',
-                values=(f'{item}', f'{length}'))
+                text=f'{index + 1}.',
+                values=(f' {item}', f'{length}'))
 
     def get_selected_song(self):
         """ Sets the selected song  as self.selected_song / self.sel_song_path """
@@ -371,7 +401,7 @@ class MediaPlayerUI(CTk):
                 self.play_song(1)
             self.after(500, self.autoplay)
 
-    def play_btn_clicked(self, ):
+    def play_btn_clicked(self):
         # play new song
         if self.player.mediaPlayer.get_state() in [State.Stopped, State.Ended, State.NothingSpecial]:
             self.play_song(0)
@@ -416,7 +446,7 @@ class MediaPlayerUI(CTk):
             self.player.set_volume(self.current_volume)
             self.volume_bar.set(self.current_volume / 100)
 
-            print('vol + :', self.player.mediaPlayer.audio_get_volume())
+            # print('current vol:', self.player.mediaPlayer.audio_get_volume())
 
     def vol_down(self):
         if self.current_volume < 5:
@@ -426,7 +456,7 @@ class MediaPlayerUI(CTk):
             self.player.set_volume(self.current_volume)
             self.volume_bar.set(self.current_volume / 100)
 
-            print('vol - :', self.player.mediaPlayer.audio_get_volume())
+            # print('current vol:', self.player.mediaPlayer.audio_get_volume())
 
     def vol_mute(self):
         self.current_volume = 0
