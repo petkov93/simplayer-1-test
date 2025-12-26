@@ -396,10 +396,10 @@ class MediaPlayerUI(CTk):
         self.play_song(0)
 
     def autoplay(self):
-        if self.repeat_playlist is True:
+        if self.repeat_playlist:
             if self.player.mediaPlayer.get_state() == State.Ended:
                 self.play_song(1)
-            self.after(500, self.autoplay)
+        self.after(500, self.autoplay)
 
     def play_btn_clicked(self):
         # play new song
@@ -431,10 +431,10 @@ class MediaPlayerUI(CTk):
         self.play_song(1)
 
     def repeat_btn_clicked(self):
-        if self.repeat_playlist is True:
+        if self.repeat_playlist:
             self.repeat_playlist = False
             self.repeat_label.configure(text='Repeat: Off')
-        elif self.repeat_playlist is False:
+        elif not self.repeat_playlist:
             self.repeat_playlist = True
             self.repeat_label.configure(text='Repeat: All')
 
